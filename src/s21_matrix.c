@@ -2,13 +2,12 @@
 
 int main() {
   matrix_t test_one, test_two, test_result;
-  s21_create_matrix(1, 2, &test_one);
+  s21_create_matrix(4, 2, &test_one);
   s21_create_matrix(2, 5, &test_two);
   s21_random_matrix(&test_one);
   s21_random_matrix(&test_two);
-  s21_mult_matrix(&test_one, &test_two, &test_result);
+  s21_transpose(&test_one, &test_result);
   s21_print_matrix(test_one);
-  s21_print_matrix(test_two);
   s21_print_matrix(test_result);
   s21_remove_matrix(&test_result);
   s21_remove_matrix(&test_one);
@@ -120,6 +119,21 @@ int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
           mul += A->matrix[i][k] * B->matrix[k][j];
         }
         result->matrix[i][j] = mul;
+      }
+    }
+  } else {
+    exit_code = 1;
+  }
+  return exit_code;
+}
+
+int s21_transpose(matrix_t *A, matrix_t *result) {
+  int exit_code = 0;
+  if (s21_valid(A)) {
+    s21_create_matrix(A->columns, A->rows, result);
+    for (int i = 0; i < result->rows; i++) {
+      for (int j = 0; j < result->columns; j++) {
+        result->matrix[i][j] = A->matrix[j][i];
       }
     }
   } else {
