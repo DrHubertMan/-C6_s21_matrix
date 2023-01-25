@@ -11,14 +11,16 @@ typedef struct matrix_struct {
   int columns;
 } matrix_t;
 
+// core function
 int s21_create_matrix(int rows, int columns, matrix_t *result);
 void s21_remove_matrix(matrix_t *A);
 int s21_eq_matrix(matrix_t *A, matrix_t *B);
 int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 
-
-int s21_valid(matrix_t M);
+// support function
+int s21_valid(matrix_t *M);
 int s21_compare_matrix(matrix_t *A, matrix_t *B);
-
+void s21_print_matrix(matrix_t M);
+void s21_random_matrix(matrix_t *M);
 #endif
