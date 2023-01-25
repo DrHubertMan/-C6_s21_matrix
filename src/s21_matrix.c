@@ -2,19 +2,19 @@
 
 int main() {
   matrix_t test_one, test_two, test_result;
-  s21_create_matrix(4, 2, &test_one);
+  s21_create_matrix(8, 8, &test_one);
   s21_create_matrix(2, 5, &test_two);
   s21_random_matrix(&test_one);
   s21_random_matrix(&test_two);
   s21_transpose(&test_one, &test_result);
   s21_print_matrix(test_one);
   s21_print_matrix(test_result);
+  printf("%d\n", s21_matrix_is_square(&test_one));
   s21_remove_matrix(&test_result);
   s21_remove_matrix(&test_one);
   s21_remove_matrix(&test_two);
-  return 0; 
+  return 0;
 }
-
 
 void s21_remove_matrix(matrix_t *A) {
   for (int i = 0; i < A->rows; i++) {
@@ -25,19 +25,19 @@ void s21_remove_matrix(matrix_t *A) {
     free(A->matrix);
 }
 
-int s21_eq_matrix(matrix_t *A, matrix_t *B) { 
-    int result = 1;
-    if (s21_valid(A) && s21_valid(B) && s21_compare_matrix(A, B)) {
-        for (int i = 0; i < A->rows; i++) {
-            for (int j = 0; j < A->columns; j++) {
-                if(A->matrix[i][j] - B->matrix[i][j] > EPS)
-                result = 0;
-            }
-        }
-    } else {
-        result = 0;
+int s21_eq_matrix(matrix_t *A, matrix_t *B) {
+  int result = 1;
+  if (s21_valid(A) && s21_valid(B) && s21_compare_matrix(A, B)) {
+    for (int i = 0; i < A->rows; i++) {
+      for (int j = 0; j < A->columns; j++) {
+        if (A->matrix[i][j] - B->matrix[i][j] > EPS)
+          result = 0;
+      }
     }
-    return result;
+  } else {
+    result = 0;
+  }
+  return result;
 }
 
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
@@ -49,8 +49,8 @@ int s21_create_matrix(int rows, int columns, matrix_t *result) {
     for (int i = 0; i < result->rows; i++) {
       result->matrix[i] = (double *)calloc(columns, sizeof(double));
     }
-  } else { 
-      exit_code = 1;
+  } else {
+    exit_code = 1;
   }
   return exit_code;
 }
@@ -110,7 +110,7 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
 
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
   int exit_code = 0;
-  if(s21_valid(A) && s21_valid(B)) {
+  if (s21_valid(A) && s21_valid(B)) {
     s21_create_matrix(A->rows, B->columns, result);
     for (int i = 0; i < A->rows; i++) {
       for (int j = 0; j < B->columns; j++) {
@@ -175,4 +175,11 @@ void s21_random_matrix(matrix_t *M) {
       free_value += 1;
     }
   }
+}
+
+int s21_matrix_is_square(matrix_t *M) {
+  int exit_code = 0;
+  if (M->rows == M->columns)
+    exit_code = 1;
+  return exit_code;
 }
