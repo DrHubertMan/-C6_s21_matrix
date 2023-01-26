@@ -6,8 +6,8 @@ int main() {
   s21_create_matrix(2, 5, &test_two);
   s21_random_matrix(&test_one);
   s21_random_matrix(&test_two);
-  s21_transpose(&test_one, &test_result);
   s21_print_matrix(test_one);
+  s21_get_matrix_cut(&test_one, &test_result, 2, 2);
   s21_print_matrix(test_result);
   printf("%d\n", s21_matrix_is_square(&test_one));
   s21_remove_matrix(&test_result);
@@ -39,7 +39,6 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
   }
   return result;
 }
-
 
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
   int exit_code = 0;
@@ -146,7 +145,7 @@ int s21_transpose(matrix_t *A, matrix_t *result) {
 void s21_print_matrix(matrix_t M) {
   for (int i = 0; i < M.rows; i++) {
     for (int j = 0; j < M.columns; j++) {
-      printf("%.7f ", M.matrix[i][j]);
+      printf("%4.f ", M.matrix[i][j]);
     }
     printf("\n");
   }
@@ -174,6 +173,45 @@ void s21_random_matrix(matrix_t *M) {
     for (int j = 0; j < M->columns; j++) {
       M->matrix[i][j] = free_value * free_value;
       free_value += 1;
+    }
+  }
+}
+
+int s21_determinant(matr *A, double *result) {
+  int exit_code = 0;
+  if (s21_valid(A) && s21_matrix_is_square(A)) {
+    if (A->rows == 1) {
+      *result = A->matrix[0][0];
+    } else if (A->rows == 2) {
+        *result =  A->matrix[0][0] * A->matrix[1][1] - A->matrix[0][1] *
+        A->matrix[1][0];
+    } else if (A->rows > 2) {
+      for (int i = 0; i < A->rows; i++) {
+        matrix_t matrix_cut;
+        s21_get_matrix_cut(A, &matrix_cut, i, 0);
+        *result += A->matrix[i][0] * pow(-1, i) * s21_determinant(A, result);
+        s21_remove_matrix(&matrix_cut);
+      }
+    }
+  } else {
+    result = NAN;
+    exit_code = 1;
+  }
+  return exit_code;
+}
+
+void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut,
+                        int columns_cut) {
+  s21_create_matrix(A->rows - 1, A->columns - 1, matrix_cut);
+  for (int i = 0, a = 0; i < A->rows; i++) {
+    if (i != columns_cut) {
+      for (int j = 0, b = 0; j < A->columns; j++) {
+        if (j != rows_cut) {
+          matrix_cut->matrix[a][b] = A->matrix[i][j];
+          b++;
+        }
+      }
+      a++;
     }
   }
 }
