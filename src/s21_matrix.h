@@ -23,6 +23,7 @@ int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 int s21_transpose(matrix_t *A, matrix_t *result);
 int s21_determinant(matrix_t *A, double *result);
 int s21_calc_complements(matrix_t *A, matrix_t *result);
+int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
 // support function
 int s21_valid(matrix_t *M);
@@ -31,4 +32,5 @@ void s21_print_matrix(matrix_t M);
 void s21_random_matrix(matrix_t *M);
 int s21_matrix_is_square(matrix_t *M);
 void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut, int columns_cut);
+void s21_inf_to_zero(matrix_t *A);
 #endif

@@ -4,10 +4,13 @@ int main() {
   matrix_t test_one, test_result;
   s21_create_matrix(3, 3, &test_one);
   s21_random_matrix(&test_one);
-  double determinant;
-  s21_determinant(&test_one, &determinant);
   s21_print_matrix(test_one);
-  printf("%.2f\n", determinant);
+  double tmp;
+  s21_determinant(&test_one, &tmp);
+  s21_inverse_matrix(&test_one, &test_result);
+  s21_print_matrix(test_result);
+  printf("%.2f\n", tmp);
+  s21_remove_matrix(&test_result);
   s21_remove_matrix(&test_one);
   return 0;
 }
@@ -26,7 +29,7 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
   if (s21_valid(A) && s21_valid(B) && s21_compare_matrix(A, B)) {
     for (int i = 0; i < A->rows; i++) {
       for (int j = 0; j < A->columns; j++) {
-        if (A->matrix[i][j] - B->matrix[i][j] > EPS)
+        if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPS * fabs(B->matrix[i][j]))
           result = 0;
       }
     }
@@ -150,8 +153,10 @@ int s21_determinant(matrix_t *A, double *result) {
       for (int i = 0; i < A->rows; i++) {
         matrix_t matrix_cut;
         s21_get_matrix_cut(A, &matrix_cut, i, 0);
-        *result +=
-            A->matrix[i][0] * pow(-1, i) * s21_determinant(&matrix_cut, result);
+
+        double tmp_result;
+        s21_determinant(&matrix_cut, &tmp_result);
+        *result += A->matrix[i][0] * pow(-1, i) * tmp_result;
         s21_remove_matrix(&matrix_cut);
       }
     }
@@ -169,7 +174,7 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
       for (int j = 0; j < A->columns; j++) {
         matrix_t matrix_cut;
         s21_get_matrix_cut(A, &matrix_cut, i, j);
-        
+
         double determinant;
         s21_determinant(&matrix_cut, &determinant);
 
@@ -181,6 +186,43 @@ int s21_calc_complements(matrix_t *A, matrix_t *result) {
     exit_code = 1;
   }
   return exit_code;
+}
+
+int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
+  int exit_code = 0;
+  s21_create_matrix(A->rows, A->columns, result);
+  
+  double determinant;
+  s21_determinant(A, &determinant);
+  if (fabs(determinant) > EPS) {
+    matrix_t minor;
+    s21_create_matrix(A->rows, A->columns, &minor);
+    s21_calc_complements(A, &minor);
+    
+    matrix_t transpose_minor;
+    s21_create_matrix(A->rows, A->columns, &transpose_minor);
+    s21_transpose(&minor, &transpose_minor);
+
+    s21_mult_number(&transpose_minor, 1 / determinant, result);
+    
+    s21_remove_matrix(&minor);
+    s21_remove_matrix(&transpose_minor);
+
+    s21_inf_to_zero(result);
+  } else {
+    exit_code = 1;
+  }
+  return exit_code;
+}
+
+void s21_inf_to_zero(matrix_t *A) {
+  for (int i = 0; i < A->rows; i++) {
+    for (int j = 0; j < A->columns; j++) {
+      if (1 / A->matrix[i][j] == -INFINITY) {
+        A->matrix[i][j] = 0;
+      }
+    }
+  }
 }
 
 void s21_print_matrix(matrix_t M) {
@@ -209,17 +251,18 @@ int s21_compare_matrix(matrix_t *A, matrix_t *B) {
 }
 
 void s21_random_matrix(matrix_t *M) {
-  int free_value = 0;
+  int free_value[] = {2, 5, 7, 6, 3, 4, 5, -2, -3};
+  int k = 0;
   for (int i = 0; i < M->rows; i++) {
     for (int j = 0; j < M->columns; j++) {
-      M->matrix[i][j] = free_value;
-      free_value += 1;
+      M->matrix[i][j] = free_value[k];
+      k++;
     }
   }
 }
 
-void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut,
-                        int columns_cut) {
+void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int columns_cut,
+                        int rows_cut) {
   s21_create_matrix(A->rows - 1, A->columns - 1, matrix_cut);
   for (int i = 0, a = 0; i < A->rows; i++) {
     if (i != columns_cut) {
