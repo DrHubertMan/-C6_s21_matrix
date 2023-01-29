@@ -1,21 +1,14 @@
 #include "s21_matrix.h"
 
 int main() {
-  matrix_t test_one, test_two;
+  matrix_t test_one, test_result;
   s21_create_matrix(3, 3, &test_one);
-  s21_create_matrix(2, 5, &test_two);
   s21_random_matrix(&test_one);
-  s21_random_matrix(&test_two);
+  double determinant;
+  s21_determinant(&test_one, &determinant);
   s21_print_matrix(test_one);
-  double example;
-  s21_determinant(&test_one, &example);
-  // printf("%f\n", example);
-  // s21_get_matrix_cut(&test_one, &test_result, 0, 0);
-  // s21_print_matrix(test_result);
-  // printf("%d\n", s21_matrix_is_square(&test_one));
-  //  s21_remove_matrix(&test_result);
+  printf("%.2f\n", determinant);
   s21_remove_matrix(&test_one);
-  s21_remove_matrix(&test_two);
   return 0;
 }
 
@@ -132,8 +125,8 @@ int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
 
 int s21_transpose(matrix_t *A, matrix_t *result) {
   int exit_code = 0;
+  s21_create_matrix(A->columns, A->rows, result);
   if (s21_valid(A)) {
-    s21_create_matrix(A->columns, A->rows, result);
     for (int i = 0; i < result->rows; i++) {
       for (int j = 0; j < result->columns; j++) {
         result->matrix[i][j] = A->matrix[j][i];
@@ -157,7 +150,30 @@ int s21_determinant(matrix_t *A, double *result) {
       for (int i = 0; i < A->rows; i++) {
         matrix_t matrix_cut;
         s21_get_matrix_cut(A, &matrix_cut, i, 0);
-        *result += A->matrix[i][0] * pow(-1, i) * s21_determinant(A, result);
+        *result +=
+            A->matrix[i][0] * pow(-1, i) * s21_determinant(&matrix_cut, result);
+        s21_remove_matrix(&matrix_cut);
+      }
+    }
+  } else {
+    exit_code = 1;
+  }
+  return exit_code;
+}
+
+int s21_calc_complements(matrix_t *A, matrix_t *result) {
+  int exit_code = 0;
+  s21_create_matrix(A->rows, A->columns, result);
+  if (s21_valid(A) && s21_matrix_is_square(A)) {
+    for (int i = 0; i < A->rows; i++) {
+      for (int j = 0; j < A->columns; j++) {
+        matrix_t matrix_cut;
+        s21_get_matrix_cut(A, &matrix_cut, i, j);
+        
+        double determinant;
+        s21_determinant(&matrix_cut, &determinant);
+
+        result->matrix[i][j] = pow(-1, i + j) * determinant;
         s21_remove_matrix(&matrix_cut);
       }
     }
