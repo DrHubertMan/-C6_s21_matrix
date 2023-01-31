@@ -1,16 +1,10 @@
 #include "s21_matrix.h"
 
 int main() {
-  matrix_t test_one, test_result;
-  s21_create_matrix(3, 3, &test_one);
-  s21_random_matrix(&test_one);
+  matrix_t test_one;
+  s21_create_matrix(3, 4, &test_one);
+  s21_fill_in(&test_one, 8);
   s21_print_matrix(test_one);
-  double tmp;
-  s21_determinant(&test_one, &tmp);
-  s21_inverse_matrix(&test_one, &test_result);
-  s21_print_matrix(test_result);
-  printf("%.2f\n", tmp);
-  s21_remove_matrix(&test_result);
   s21_remove_matrix(&test_one);
   return 0;
 }
@@ -250,13 +244,10 @@ int s21_compare_matrix(matrix_t *A, matrix_t *B) {
   return result;
 }
 
-void s21_random_matrix(matrix_t *M) {
-  int free_value[] = {2, 5, 7, 6, 3, 4, 5, -2, -3};
-  int k = 0;
-  for (int i = 0; i < M->rows; i++) {
+void s21_fill_in(matrix_t *M, double fill_number) {
+  for (int i = 0; i < M->rows; i ++) {
     for (int j = 0; j < M->columns; j++) {
-      M->matrix[i][j] = free_value[k];
-      k++;
+      M->matrix[i][j] = fill_number;
     }
   }
 }
