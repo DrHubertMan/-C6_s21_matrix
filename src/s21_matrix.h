@@ -1,8 +1,9 @@
 #ifndef S21_MATRIX_H
 #define S21_MATRIX_H
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <stdbool.h>
 
 #define EPS 1e-7
 
@@ -26,10 +27,13 @@ int s21_calc_complements(matrix_t *A, matrix_t *result);
 int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
 // support function
+double s21_determinant_recursive(matrix_t A, int n, int ignore_rows,
+                                 bool *ignore_columns);
 int s21_valid(matrix_t *M);
 int s21_compare_matrix(matrix_t *A, matrix_t *B);
 void s21_fill_in(matrix_t *M, double fill_number);
 int s21_matrix_is_square(matrix_t *M);
-void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut, int columns_cut);
+void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut,
+                        int columns_cut);
 void s21_inf_to_zero(matrix_t *A);
 #endif

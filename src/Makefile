@@ -15,7 +15,7 @@ gcov_report: test
 	open report/index.html
 
 test: s21_matrix.a
-	$(CC)  $(OFLFAGS) test_coverage.out test.o -lcheck -L. s21_matrix.a
+	$(CC) --coverage $(OFLFAGS) test_coverage.out test.o -lcheck -L. s21_matrix.a
 	./test_coverage.out
 
 s21_matrix.a: s21_matrix.o
@@ -23,7 +23,7 @@ s21_matrix.a: s21_matrix.o
 	ranlib s21_matrix.a
 
 s21_matrix.o: check_s21_matrix.o
-	$(CC) $(CFLAGS) s21_matrix.c
+	$(CC) $(CFLAGSCOV) s21_matrix.c
 
 check_s21_matrix.o:
 	$(CC) $(CFLAGS) test.c

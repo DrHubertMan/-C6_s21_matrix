@@ -479,7 +479,7 @@ START_TEST(s21_calc_complements_test_2) {
 }
 END_TEST
 
-START_TEST(s21_calc_inverse_matrix_test_1) {
+START_TEST(s21_inverse_matrix_test_1) {
   matrix_t A, compare, result;
   s21_create_matrix(3, 3, &A);
   s21_create_matrix(3, 3, &compare);
@@ -518,7 +518,7 @@ START_TEST(s21_calc_inverse_matrix_test_1) {
 }
 END_TEST
 
-START_TEST(s21_calc_inverse_matrix_test_2) {
+START_TEST(s21_inverse_matrix_test_2) {
   matrix_t A, result;
   s21_create_matrix(3, 3, &A);
 
@@ -543,8 +543,8 @@ END_TEST
 void part4_tests(TCase *tc1_1) {
   tcase_add_test(tc1_1, s21_calc_complements_test_1);
   tcase_add_test(tc1_1, s21_calc_complements_test_2);
-  tcase_add_test(tc1_1, s21_calc_inverse_matrix_test_1);
-  tcase_add_test(tc1_1, s21_calc_inverse_matrix_test_2);
+  tcase_add_test(tc1_1, s21_inverse_matrix_test_1);
+  tcase_add_test(tc1_1, s21_inverse_matrix_test_2);
 }
 
 int main(void) {
