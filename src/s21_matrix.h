@@ -28,7 +28,6 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 // support function
 int s21_valid(matrix_t *M);
 int s21_compare_matrix(matrix_t *A, matrix_t *B);
-void s21_print_matrix(matrix_t M);
 void s21_fill_in(matrix_t *M, double fill_number);
 int s21_matrix_is_square(matrix_t *M);
 void s21_get_matrix_cut(matrix_t *A, matrix_t *matrix_cut, int rows_cut, int columns_cut);
